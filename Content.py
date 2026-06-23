@@ -174,7 +174,7 @@ SECTIONS = {
 🐙 GitHub
 
 Мой репозиторий:
-https://github.com/kainmylie/kainy
+https://github.com/kainmylie/Kain
 """,
     },
 }
