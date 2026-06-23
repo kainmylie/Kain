@@ -149,7 +149,7 @@ QUIZ_QUESTIONS = [
     },
 ]
 
-#эти словари сделаны чтобы не копировать один текст сто раз
+#чтоб не копировать один текст сто раз
 COMMAND_TO_SECTION = {}
 
 for key, section in SECTIONS.items():
@@ -159,12 +159,11 @@ for key, section in SECTIONS.items():
 #тут связываю текст кнопки с нужным разделом
 BUTTON_TO_SECTION = {}
 
-#кнопки беру из контента там лежит весь текст портфолио
 for key, section in SECTIONS.items():
     button_name = section["button"]
     BUTTON_TO_SECTION[button_name] = key
 
-#команды для декоратора ниже
+#команды для декоратора
 SECTION_COMMANDS = []
 
 for section in SECTIONS.values():
@@ -194,7 +193,7 @@ def parse_args(argv):
         help="Telegram Bot API token. Можно также передать через TELEGRAM_TOKEN.",
     )
 
-    #ключ нужен только если работает ай часть
+    #ключ нужен только если работает ай
     parser.add_argument(
         "--groq-key",
         default=os.getenv("GROQ_API_KEY"),
