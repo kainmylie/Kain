@@ -61,6 +61,21 @@ Telegram-бот-портфолио Камилы Нуртазиной для ко
 - [Telegram-бот](https://t.me/Kamila_Portfolio_Bot)
 - [GitHub-репозиторий](https://github.com/kainmylie/kainy)
 
+## Скриншоты бота
+
+### Профиль бота
+
+![Профиль](Bot1.jpg)
+![Профиль бота](Bot_quiz.jpg)
+
+### Преветственное сообщение
+
+![Преветствие](Bot_main.jpg)
+
+### Меню и навигация
+
+![Меню](Bot_menu.jpg)
+
 ## 💜 Автор
 
 Камила Нуртазина  
