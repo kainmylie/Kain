@@ -59,7 +59,7 @@ Telegram-бот-портфолио Камилы Нуртазиной для ко
 ## 🔗 Ссылки
 
 - [Telegram-бот](https://t.me/Kamila_Portfolio_Bot)
-- [GitHub-репозиторий](https://github.com/kainmylie/kainy)
+- [GitHub-репозиторий](https://github.com/kainmylie/Kain)
 
 ## Скриншоты бота
 
