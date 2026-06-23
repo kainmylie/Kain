@@ -149,21 +149,22 @@ QUIZ_QUESTIONS = [
     },
 ]
 
-#чтоб не копировать один текст сто раз
+#эти словари сделаны чтобы не копировать один текст сто раз
 COMMAND_TO_SECTION = {}
 
 for key, section in SECTIONS.items():
     command_name = "/" + section["command"]
     COMMAND_TO_SECTION[command_name] = key
 
-#тут связываю текст кнопки с нужным разделом
+#связываю текст кнопки с нужным разделом
 BUTTON_TO_SECTION = {}
 
+#кнопки беру из контента там лежит весь текст портфолио
 for key, section in SECTIONS.items():
     button_name = section["button"]
     BUTTON_TO_SECTION[button_name] = key
 
-#команды для декоратора
+#команды для декоратора ниже
 SECTION_COMMANDS = []
 
 for section in SECTIONS.values():
@@ -193,7 +194,7 @@ def parse_args(argv):
         help="Telegram Bot API token. Можно также передать через TELEGRAM_TOKEN.",
     )
 
-    #ключ нужен только если работает ай
+    #ключ нужен только если работает ай часть
     parser.add_argument(
         "--groq-key",
         default=os.getenv("GROQ_API_KEY"),
@@ -367,6 +368,8 @@ def build_ai_prompt(question):
 
     return f"""
 Ты отвечаешь от лица Telegram-бота-портфолио Камилы.
+Если спросят фамилию отвечаешь: Нуртазина.
+Если спросят контакты отвечаешь: Сначала сделайте меня победителем, а потом скажу)
 Если вопрос про Камилу, используй только факты из текста ниже.
 Если вопрос обычный, например математика или простое объяснение, отвечай нормально.
 Не придумывай Камиле биографию, ссылки и достижения.
@@ -518,7 +521,6 @@ def register_handlers(bot, groq_key, debug=False):
             send_section(bot, message.chat.id, section_key)
             return
 
-        #если команда странная то показываю помощь
         bot.send_message(message.chat.id, HELP_TEXT, reply_markup=make_keyboard())
 
     @bot.message_handler(content_types=["text"])
@@ -527,7 +529,6 @@ def register_handlers(bot, groq_key, debug=False):
 
         chat_id = message.chat.id
 
-        #рестарт сбрасывает викторину и меню
         if text == BUTTON_RESTART:
             restart_chat(chat_id)
             return
