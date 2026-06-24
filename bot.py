@@ -33,6 +33,21 @@ BEAUTY_OPTIONS = ["Kylie Jenner", "Megan Fox", "Irina Shayk", "Adriana Lima"]
 
 RATE_OPTIONS = ["Бот как бот", "Неплохо", "Супер, есть вайб"]
 
+RATE_REACTIONS = {
+    "Бот как бот": {
+        "gif": "not_funny_cat.gif",
+        "text": "…",
+    },
+    "Неплохо": {
+        "gif": "huh_cat.gif",
+        "text": "«Неплохо?»",
+    },
+    "Супер, есть вайб": {
+        "gif": "funny_cat.gif",
+        "text": "От души!🤪",
+    },
+}
+
 QUIZ_LETTERS = ["A", "B", "C"]
 
 QUIZ_QUESTIONS = [
@@ -563,12 +578,24 @@ def register_handlers(bot, groq_key, debug=False):
             return
 
         if text in RATE_OPTIONS:
-            bot.send_message(
-                chat_id,
-                "СТОП. Не отвечай! Я уже знаю, что мой бот был безупречным😏.\n\n"
-                "Спасибо за оценку хи-хи",
-                reply_markup=make_keyboard(),
-            )
+            reaction = RATE_REACTIONS.get(text)
+
+            if reaction:
+                try:
+                    with open(reaction["gif"], "rb") as gif:
+                        bot.send_animation(
+                            chat_id,
+                            gif,
+                            caption=reaction["text"],
+                            reply_markup=make_keyboard(),
+                        )
+                except Exception:
+                    bot.send_message(
+                        chat_id,
+                        reaction["text"],
+                        reply_markup=make_keyboard(),
+                    )
+
             return
 
         if text == BUTTON_BEAUTY:
