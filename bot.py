@@ -21,9 +21,15 @@ except ImportError:
 
 BUTTON_RANDOM_FACT = "🎲 Рандомный факт обо мне"
 BUTTON_AI = "🤖 Спроси Камилу"
+BUTTON_MUSIC = "🎧 Атмосфера 𝙺𝚊𝚒𝚗𝚢"
+BUTTON_BEAUTY = "Beauty-батл💅🏻"
 BUTTON_QUIZ = "🧩 Викторина"
 BUTTON_RESTART = "🔄 Рестарт"
 BUTTON_RATE = "⭐ Оценить бота"
+MUSIC_FILE = "Wild Strawberry.mp3"
+HAND_FILE = "Hand.jpeg"
+
+BEAUTY_OPTIONS = ["Kylie Jenner", "Megan Fox", "Irina Shayk", "Adriana Lima"]
 
 RATE_OPTIONS = ["Бот как бот", "Неплохо", "Супер, есть вайб"]
 
@@ -229,6 +235,8 @@ def make_keyboard():
     buttons.append(types.KeyboardButton(BUTTON_RANDOM_FACT))
     buttons.append(types.KeyboardButton(BUTTON_AI))
     buttons.append(types.KeyboardButton(BUTTON_QUIZ))
+    buttons.append(types.KeyboardButton(BUTTON_MUSIC))
+    buttons.append(types.KeyboardButton(BUTTON_BEAUTY))
     buttons.append(types.KeyboardButton(BUTTON_RATE))
     buttons.append(types.KeyboardButton(BUTTON_RESTART))
 
@@ -253,6 +261,16 @@ def make_rate_keyboard():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
 
     for option in RATE_OPTIONS:
+        keyboard.add(types.KeyboardButton(option))
+
+    keyboard.add(types.KeyboardButton(BUTTON_RESTART))
+    return keyboard
+
+
+def make_beauty_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+
+    for option in BEAUTY_OPTIONS:
         keyboard.add(types.KeyboardButton(option))
 
     keyboard.add(types.KeyboardButton(BUTTON_RESTART))
@@ -487,9 +505,12 @@ def register_handlers(bot, groq_key, debug=False):
 
     quiz_score = {}
 
+    beauty_mode = {}
+
     def restart_chat(chat_id):
         quiz_progress.pop(chat_id, None)
         quiz_score.pop(chat_id, None)
+        beauty_mode.pop(chat_id, None)
 
         bot.send_message(
             chat_id,
@@ -547,6 +568,56 @@ def register_handlers(bot, groq_key, debug=False):
                 "СТОП. Не отвечай! Я уже знаю, что мой бот был безупречным😏.\n\n"
                 "Спасибо за оценку хи-хи",
                 reply_markup=make_keyboard(),
+            )
+            return
+
+        if text == BUTTON_BEAUTY:
+            beauty_mode[chat_id] = True
+            bot.send_message(
+                chat_id,
+                "Как вы думаете, кто красивее? Выберите вариант ниже🤔...",
+                reply_markup=make_beauty_keyboard(),
+            )
+            return
+
+        if beauty_mode.get(chat_id):
+            if text in BEAUTY_OPTIONS:
+                beauty_mode.pop(chat_id, None)
+
+                bot.send_message(
+                    chat_id,
+                    "Неверно.",
+                    reply_markup=make_keyboard(),
+                )
+
+                try:
+                    with open(HAND_FILE, "rb") as photo:
+                        bot.send_photo(
+                            chat_id,
+                            photo,
+                            reply_markup=make_keyboard(),
+                            has_spoiler=True,
+                        )
+
+                        bot.send_message(
+                            chat_id,
+                            "||По\\-моему, это было очевидно 😜||",
+                            parse_mode="MarkdownV2",
+                            reply_markup=make_keyboard(),
+                        )
+
+                except Exception:
+                    bot.send_message(
+                        chat_id,
+                        "По-моему, это было очевидно 😜",
+                        reply_markup=make_keyboard(),
+                    )
+                return
+
+            bot.send_message(
+                chat_id,
+                "Выбери один из вариантов кнопкой.",
+                reply_markup=make_beauty_keyboard(),
             )
             return
 
@@ -609,6 +680,28 @@ def register_handlers(bot, groq_key, debug=False):
 
         if text == BUTTON_AI:
             bot.send_message(chat_id, AI_INVITE_TEXT, reply_markup=make_keyboard())
+            return
+
+
+        if text == BUTTON_MUSIC:
+            try:
+                with open(MUSIC_FILE, "rb") as music:
+                    bot.send_audio(
+                        chat_id,
+                        music,
+                        caption=(
+                            "🎧 Атмосфера 𝙺𝚊𝚒𝚗𝚢 включена\n\n"
+                            "Слушай трек и погружайся в мой мир💜\n"
+                            "Это портфолио не просто смотрят — его чувствуют.😉"
+                        ),
+                        reply_markup=make_keyboard(),
+                    )
+            except Exception:
+                bot.send_message(
+                    chat_id,
+                    "Музыка сейчас не нашлась, но вайб портфолио все еще на месте 💜",
+                    reply_markup=make_keyboard(),
+                )
             return
 
         #проверяю не нажата ли кнопка раздела
